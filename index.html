@@ -1,0 +1,128 @@
+
+
+
+<<!DOCTYPE html>
+<html>
+<head>
+  <title>Search API</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    h1 {
+  margin-top: 50px;
+  text-align: center;
+}
+
+form {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+#results {
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+</style>
+</head>
+<body>
+  <h1>Search API</h1>
+
+  <form id="searchForm">
+    <label for="apiKeyInput">API Key:</label>
+    <input type="text" id="apiKeyInput" name="key" placeholder="Enter API Key" required><br>
+
+    <label for="searchInput">Search Value:</label>
+    <input type="text" id="searchInput" name="s" placeholder="Enter Search Value" required><br>
+
+    <label for="countInput">Max Results:</label>
+    <input type="number" id="countInput" name="count" placeholder="Enter Max Results" min="1" required><br>
+
+    <button type="submit">Submit</button>
+  </form>
+ 
+  <div id="results"></div>
+  
+  <script>
+    const form = document.getElementById('searchForm');
+    const afterDiv = document.getElementById('results');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const loadingMsg = document.createElement('p');
+      loadingMsg.textContent = 'Loading...';
+      afterDiv.appendChild(loadingMsg);
+
+      const api = document.getElementById('apiKeyInput').value;
+      
+      const val = document.getElementById('searchInput').value;
+      const count = document.getElementById('countInput').value;
+
+      const url = `/search?key=${api}&s=${val}&count=${count}`;
+      const response = await fetch(url);
+      const info = await response.json();
+
+      let add = '';
+      info.results.forEach((result) => {
+        
+        add += `<p>URL: ${result.url}</p>`;
+        add += `<p>Score: ${result.score}</p>`;
+        add += '<hr>';
+      });
+      afterDiv.removeChild(loadingMsg);
+      afterDiv.innerHTML = add;
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script>
+    const currentDate = moment();
+    console.log(currentDate.format('MMMM Do YYYY, h:mm:ss a'));
+  </script>
+</body>
+</html>
